@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+.DS_Store
+
+# Data files are not committed (large / externally sourced) — see README.
+# This includes the raw dataset and any generated CSVs.
+*.csv
+*.parquet
