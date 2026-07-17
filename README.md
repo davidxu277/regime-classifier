@@ -53,7 +53,11 @@ Top features: `ret_20`, `px_ma200`, `vol_20`, `px_ma60` — i.e. the model settl
 
 ## Data
 
-The labeled dataset is **not included** (large, and externally sourced). Provide a daily CSV named `stock_market_regimes_2000_2026.csv` in the repo root with these columns:
+The labeled dataset `stock_market_regimes_2000_2026.csv` is included in the repo (~35 MB).
+
+**Source:** [Stock Market Regimes (2000–2026)](https://www.kaggle.com/datasets/mafaqbhatti/stock-market-regimes-20002026) by Muhammad Afaq Bhatti on Kaggle, licensed under Apache 2.0. Regime labels are derived from return dynamics, volatility behavior, and stress indicators; macro variables (rates, inflation, unemployment, yield curve, VIX) are included for context.
+
+Columns:
 
 ```
 date, ticker, close, returns, volatility, regime_label, regime_confidence,

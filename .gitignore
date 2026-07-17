@@ -3,7 +3,8 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# Data files are not committed (large / externally sourced) — see README.
-# This includes the raw dataset and any generated CSVs.
+# Ignore generated/scratch data files by default...
 *.csv
 *.parquet
+# ...but ship the source dataset (Apache 2.0, from Kaggle — see README)
+!stock_market_regimes_2000_2026.csv
