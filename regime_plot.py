@@ -1,4 +1,4 @@
-"""Dashboard of what the nowcast regime model learned (trained on smoothed labels)."""
+"""Dashboard of what the nowcast regime model learned."""
 from __future__ import annotations
 
 import os
@@ -25,7 +25,7 @@ clf.fit(train[FEATURES], train["regime"])
 labels = sorted(df["regime"].unique())
 
 fig, ax = plt.subplots(2, 2, figsize=(15, 11))
-fig.suptitle("Regime Nowcaster — what it learned (smoothed labels; train 2000–2018, test 2019–2026)",
+fig.suptitle("Regime Nowcaster — what it learned (train 2000–2018, test 2019–2026)",
              fontsize=15, fontweight="bold")
 
 # (0,0) scatter: trend vs volatility, colored by regime

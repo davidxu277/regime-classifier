@@ -6,13 +6,11 @@ Given trailing price/macro features as of day t, classify the CURRENT market reg
 day t and the label is day t's regime.
 
 Pipeline:
-  1. Smooth the raw daily labels into persistent regimes (see regime_smooth.py) — the raw
-     labels flip every ~7 days, which is labeling noise rather than real regime switching.
-  2. Engineer per-ticker technical features (momentum / MA deviation / volatility / price
+  1. Engineer per-ticker technical features (momentum / MA deviation / volatility / price
      position) + macro features (vix, rates, unemployment, yield curve).
-  3. Time-based train/test split (no look-ahead, no shuffle).
-  4. RandomForest with balanced class weights.
-  5. Report accuracy + per-class metrics + confusion matrix, feature importance, and a
+  2. Time-based train/test split (no look-ahead, no shuffle).
+  3. RandomForest with balanced class weights.
+  4. Report accuracy + per-class metrics + confusion matrix, feature importance, and a
      per-regime feature profile ("what characterizes each regime").
 """
 from __future__ import annotations
@@ -24,12 +22,9 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, f1_score
 
-from regime_smooth import smooth
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "stock_market_regimes_2000_2026.csv")
 TEST_START = "2019-01-01"   # out-of-sample: covers COVID crash + 2022 bear
-MIN_DUR = 10                # minimum regime duration (trading days) after smoothing
 
 
 # ── feature engineering (per ticker, trailing windows only) ───────────────────
@@ -60,26 +55,21 @@ FEATURES = TECH + MACRO
 
 
 def load_and_prepare() -> pd.DataFrame:
-    """Load data, smooth labels into persistent regimes, engineer features."""
+    """Load data and engineer features."""
     df = pd.read_csv(DATA)
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values(["ticker", "date"]).reset_index(drop=True)
     df["yield_spread"] = df["10y_treasury"] - df["2y_treasury"]
+    df["regime"] = df["regime_label"]
+    df = df[df["regime"] != "High-volatility"].copy()  # only 16 rows, cannot learn
 
-    # step 1: smooth labels (removes ~day-to-day flicker; see regime_smooth.py)
-    df["regime"] = df.groupby("ticker")["regime_label"].transform(
-        lambda s: smooth(s.to_numpy(), MIN_DUR)
-    )
-    df = df[df["regime"] != "High-volatility"].copy()  # 16 raw rows, absorbed by smoothing
-
-    # step 2: features
     df = df.groupby("ticker", group_keys=False).apply(add_technical_features)
     return df.dropna(subset=FEATURES + ["regime"])
 
 
 def main() -> None:
     df = load_and_prepare()
-    print(f"usable rows after smoothing + feature warmup: {len(df):,}")
+    print(f"usable rows after feature warmup: {len(df):,}")
 
     train = df[df["date"] < TEST_START]
     test  = df[df["date"] >= TEST_START]
