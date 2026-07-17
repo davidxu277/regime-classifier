@@ -8,6 +8,12 @@ A supervised **market-regime nowcaster**. Given trailing price and macro feature
 
 ---
 
+## The labels
+
+Daily regime labels over the S&P 500 — the bands line up with market history: the Q4-2018 selloff (Bear), the COVID crash (Crisis, purple), the 2022 bear market, the 2023 recovery. Note the labels are choppy day-to-day (median run length ~3 days); see [Scope & limitations](#scope--limitations).
+
+![Regime bands on the S&P 500](figures/regime_bands.png)
+
 ## Approach
 
 **Features (all trailing / past-only):**
@@ -63,6 +69,7 @@ pip install -r requirements.txt
 
 python regime_classifier.py  # train + evaluate the nowcaster
 python regime_plot.py        # dashboard figure
+python regime_bands_viz.py   # regime bands over the S&P 500
 ```
 
 ## Files
@@ -71,6 +78,7 @@ python regime_plot.py        # dashboard figure
 |---|---|
 | `regime_classifier.py` | Feature engineering, time split, RandomForest nowcaster, evaluation |
 | `regime_plot.py` | Dashboard: scatter, feature importance, confusion matrix, regime profile |
+| `regime_bands_viz.py` | Regime label bands over the S&P 500 |
 
 ---
 
